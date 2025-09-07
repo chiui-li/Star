@@ -8,11 +8,59 @@
 import { StrictMode } from "react";
 import { createRoot } from "react-dom/client";
 import { App } from "./App";
+import {
+  Outlet,
+  RouterProvider,
+  Link,
+  createRouter,
+  createRoute,
+  createRootRoute,
+} from "@tanstack/react-router";
+import { TanStackRouterDevtools } from "@tanstack/react-router-devtools";
+import { RedirectComponent } from "./RedirectComponent";
+
+const rootRoute = createRootRoute({
+  component: () => (
+    <>
+      <Outlet />
+      <TanStackRouterDevtools />
+    </>
+  ),
+});
+
+const routeTree = rootRoute.addChildren([
+  createRoute({
+    getParentRoute: () => rootRoute,
+    path: "/login",
+    component: App,
+  }),
+  createRoute({
+    getParentRoute: () => rootRoute,
+    path: "/",
+    component: () => (
+      <RedirectComponent
+        to="/login"
+        // Add your custom redirect logic here:
+        // delay={1000} // Optional delay in milliseconds
+        // condition={() => true} // Optional condition function
+        // onBeforeRedirect={() => console.log('Redirecting to login...')} // Optional pre-redirect callback
+        // onAfterRedirect={() => console.log('Redirect completed')} // Optional post-redirect callback
+        // message="Redirecting to login page..." // Optional custom message
+      />
+    ),
+  }),
+]);
+const router = createRouter({ routeTree });
+declare module "@tanstack/react-router" {
+  interface Register {
+    router: typeof router;
+  }
+}
 
 const elem = document.getElementById("root")!;
 const app = (
   <StrictMode>
-    <App />
+    <RouterProvider router={router} />
   </StrictMode>
 );
 

@@ -1,11 +1,11 @@
-import { APITester } from "./APITester";
+import { LoginComponent } from "./LoginComponent";
 import "./index.css";
 
 import logo from "./logo.svg";
 import reactLogo from "./react.svg";
 
 export function App() {
-  return <APITester />;
+  return <LoginComponent />;
 }
 
 export default App;
